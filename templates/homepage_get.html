@@ -47,20 +47,16 @@
                 return;
             }
 
-            // Prepara i dati da inviare
+            // Prepara i dati da inviare nell'URL
             const operazioneSelezionata = operazione.value;
+            const url = `/calcola?num1=${num1}&num2=${num2}&operazione=${operazioneSelezionata}`;
 
-            // Simuliamo l'invio della richiesta a un'API (qui utilizziamo un'API fittizia)
-            fetch('https://3246-frasidoti-spaoperazioni-xzizdo9z5sv.ws-eu116.gitpod.io/calcola', {
-                method: 'POST',
+            // Effettua la richiesta GET
+            fetch(url, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    num1: num1,
-                    num2: num2,
-                    operazione: operazioneSelezionata
-                })
+                }
             })
             .then(response => response.json())
             .then(data => {

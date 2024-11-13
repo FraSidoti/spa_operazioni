@@ -1,33 +1,39 @@
 from flask import Flask, render_template, request, jsonify
-app=Flask(__name__)
+app = Flask(__name__)
 
-# server web - codice per restituire la home page
+# Server web - codice per restituire la homepage
 @app.route("/")
 def homepage():
-    return render_template("homepage.html")
+    return render_template("homepageget.html")
 
-# server API
+# Server API per calcoli
 @app.route("/calcola", methods=["GET"])
 def calcola():
-    # prendo le info dal front end
-    json_data = request.get_json()
-    if json_data:
-        num1 = json_data.get('num1')
-        num2 = json_data.get('num2')
-        operazione = json_data.get('operazione')
-        # elaborazione delle info
+    # Prendo le informazioni dal front end
+    num1 = request.args.get('num1', type=float)
+    num2 = request.args.get('num2', type=float)
+    operazione = request.args.get('operazione')
+    
+    # Verifico che i dati siano presenti e validi
+    if num1 is not None and num2 is not None and operazione:
         if operazione == 'addizione':
             risultato = num1 + num2
         elif operazione == 'sottrazione':
-            risultato = num1 + num2
+            risultato = num1 - num2
         elif operazione == 'moltiplicazione':
             risultato = num1 * num2
         elif operazione == 'divisione':
-            risultato = num1 // num2
-        # restituire i risultati al front end
-        return jsonify(risultato = risultato)
+            if num2 != 0:
+                risultato = num1 / num2
+            else:
+                return jsonify(risultato="Errore: divisione per zero")
+        else:
+            return jsonify(risultato="Operazione non valida")
+        
+        # Restituisco il risultato al front end
+        return jsonify(risultato=risultato)
     else:
-        return jsonify(risultato = 'mancano i dati')
+        return jsonify(risultato="Mancano i dati")
 
-if __name__== "__main__":
-    app.run(host="0.0.0.0", port=3246, debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=3245, debug=True)
